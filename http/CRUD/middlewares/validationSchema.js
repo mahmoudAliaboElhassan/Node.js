@@ -12,11 +12,9 @@ const validationSchemaAdd = () => {
 };
 const validationSchemaEdit = () => {
   return [
-    [
-      body("title")
-        .isLength({ min: 2 })
-        .withMessage("should be more than two chars"),
-    ],
+    body("title")
+      .isLength({ min: 2 })
+      .withMessage("should be more than two chars"),
   ];
 };
 module.exports = { validationSchemaAdd, validationSchemaEdit };
