@@ -1,12 +1,16 @@
 console.log("Hello from node.js with db");
 
+require("dotenv").config();
+// .env file should be in root directory with node modules
 const express = require("express");
 const morgan = require("morgan");
 const mongoose = require("mongoose");
+var cors = require("cors");
+const httpStatusText = require("./utils/httpStatusText");
+const url = process.env.MONGO_URL;
+// this wil give error WITHOUT dotenv because environment variables is not loaded
 mongoose
-  .connect(
-    "mongodb+srv://mahmoudjsdev:node.js_123@learn-mongo-db.fa990.mongodb.net/mahmoudzone?retryWrites=true&w=majority&appName=learn-mongo-db"
-  )
+  .connect(url)
   .then(() => {
     console.log("connected Successfully ");
   })
@@ -15,8 +19,11 @@ mongoose
   });
 // "mongodb+srv://mahmoudjsdev:node.js_123@learn-mongo-db.fa990.mongodb.net/mahmoudzone?retryWrites=true&w=majority&appName=learn-mongo-db"
 // here i connected to database directly
+// console.log("process", process);
 const app = express();
 
+app.use(cors());
+// app.use(cors()) => to allow all origins
 app.use(express.json());
 app.use(morgan("dev"));
 
@@ -25,10 +32,44 @@ app.get("/", (req, res) => {
 });
 
 const coursesRouter = require("./routes/courses.route");
+
+// to make it to specific route
+// app.use("/api/courses", cors(), coursesRouter);
 app.use("/api/courses", coursesRouter);
 
+app.all("*", (req, res, next) => {
+  // every request will pass through this middleware
+  res.status(404).json({
+    status: httpStatusText.ERROR,
+    message: "page not found",
+    data: null,
+    code: 404,
+  });
+});
+// WILD CARD ROUTE HANDLER => if no route matched this will be executed => 404 page not found
+// 404 page not found is not good for api => should be json response with status 404
+
+//global error handler middleware => if error happened in any middleware or route
+
+app.use((err, req, res, next) => {
+  if (err.statusCode) {
+    res.status(err.statusCode || 500).json({
+      status: err.statusText,
+      data: { error: err.message },
+    });
+  } else {
+    res.status(500).json({
+      status: err.statusText,
+      message: err.message,
+      code: 500,
+      data: null,
+    });
+  }
+});
+// error here comes from asyncWrapper.js => next(err) => next(err) => this middleware
+
 const PORT = 4000;
-app.listen(PORT, () => {
+app.listen(process.env.PORT, () => {
   console.log(`running on port ${PORT}`);
 });
 
@@ -89,3 +130,10 @@ app.listen(PORT, () => {
 // fail is in request means error in request 401,403,404
 // error is An error occurred in processing the request, i.e. an exception was thrown
 // in server means error in server 500
+
+// CORS => Cross-Origin Resource Sharing => security feature in browser
+// to prevent requests from different origins => different domains
+// to make it to specific origin
+// app.get("/products/:id", cors(), function (req, res, next) {
+//   res.json({ msg: "This is CORS-enabled for a Single Route" });
+// });
