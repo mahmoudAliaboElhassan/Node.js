@@ -1,9 +1,9 @@
 const { body } = require("express-validator");
 
-const validationSchemaAdd = () => {
+const validationSchemaAddCourse = () => {
   return [body("title").notEmpty().withMessage("can not be empty")];
 };
-const validationSchemaEdit = () => {
+const validationSchemaEditCourse = () => {
   return [
     body("title")
       .optional() // Make the title optional
@@ -12,4 +12,18 @@ const validationSchemaEdit = () => {
     body("price").optional(), // Make price optional
   ];
 };
-module.exports = { validationSchemaAdd, validationSchemaEdit };
+const validationSchemaLogin = () => {
+  return [
+    body("email")
+      .notEmpty()
+      .withMessage("email can not be empty")
+      .isEmail()
+      .withMessage("email is not valid"),
+    body("password").notEmpty().withMessage("password can not be empty"),
+  ];
+};
+module.exports = {
+  validationSchemaAddCourse,
+  validationSchemaEditCourse,
+  validationSchemaLogin,
+};

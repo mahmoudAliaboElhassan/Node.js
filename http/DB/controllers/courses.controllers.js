@@ -5,14 +5,30 @@ const { DOCUMENTSPERSPAGE } = require("../utils/constants");
 const asyncWrapper = require("../middlewares/asyncWrapper");
 const appError = require("../utils/appError");
 
+// const getAllCourses = asyncWrapper(async (req, res) => {
+//   const page = req.query.page || 1;
+//   const courses = await Course.find({}, "title")
+//     .limit(DOCUMENTSPERSPAGE)
+//     .skip((page - 1) * DOCUMENTSPERSPAGE);
+//   // const courses = await Course.find({}, { __v: false });
+//   // can be true and false or 1 and 0
+//   // const courses = await Course.find({ price: { $gt: 800 } });
+//   res.json({ status: httpStatusText.SUCESS, data: { courses } });
+// });
+
 const getAllCourses = asyncWrapper(async (req, res) => {
   const page = req.query.page || 1;
-  const courses = await Course.find({}, "title")
+  const search = req.query.search || ""; // Get the search term from query params
+
+  // Build the search query
+  const searchQuery = search
+    ? { title: { $regex: search, $options: "i" } } // Case-insensitive regex search
+    : {};
+
+  const courses = await Course.find(searchQuery, "title")
     .limit(DOCUMENTSPERSPAGE)
     .skip((page - 1) * DOCUMENTSPERSPAGE);
-  // const courses = await Course.find({}, { __v: false });
-  // can be true and false or 1 and 0
-  // const courses = await Course.find({ price: { $gt: 800 } });
+
   res.json({ status: httpStatusText.SUCESS, data: { courses } });
 });
 

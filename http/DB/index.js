@@ -6,6 +6,8 @@ const express = require("express");
 const morgan = require("morgan");
 const mongoose = require("mongoose");
 var cors = require("cors");
+const cookieParser = require("cookie-parser");
+
 const httpStatusText = require("./utils/httpStatusText");
 const url = process.env.MONGO_URL;
 // this wil give error WITHOUT dotenv because environment variables is not loaded
@@ -21,21 +23,37 @@ mongoose
 // here i connected to database directly
 // console.log("process", process);
 const app = express();
+const path = require("path");
 
 app.use(cors());
 // app.use(cors()) => to allow all origins
 app.use(express.json());
 app.use(morgan("dev"));
-
+app.use("/uploads", express.static(path.join(__dirname, "uploads")));
+console.log("path", path.join(__dirname, "uploads"));
+// direname is current directory
+// middleware
+//make uploads static folder to serve images and files
+// express.satatic(directory)
+// The directory argument specifies the folder that contains the static files.
+// In this case, the uploads directory is being served.
+console.log("direname", __dirname);
+// path.join() is a method from Node.js's path module.
+// It creates a normalized path by combining multiple path segments.
+// __dirname is a global variable in Node.js that
+//  represents the absolute directory path of the current JavaScript file.
+// Combining __dirname with "uploads" gives the absolute path to the uploads folder in your project.
+app.use(cookieParser());
 app.get("/", (req, res) => {
   res.send("home page");
 });
 
 const coursesRouter = require("./routes/courses.route");
-
+const usersRouter = require("./routes/users.route");
 // to make it to specific route
 // app.use("/api/courses", cors(), coursesRouter);
 app.use("/api/courses", coursesRouter);
+app.use("/api/users", usersRouter);
 
 app.all("*", (req, res, next) => {
   // every request will pass through this middleware
