@@ -46,4 +46,7 @@ router.route("/").get(verifyToken, usersController.getAllUsers);
 router.route("/register").post(upload.single("avatar"), usersController.signUp);
 router.route("/login").post(validationSchemaLogin(), usersController.login);
 router.route("/logout").get(usersController.logOut);
+router
+  .route("/change-password/:id")
+  .put(verifyToken, usersController.change_password);
 module.exports = router;

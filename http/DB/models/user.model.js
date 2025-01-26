@@ -37,6 +37,18 @@ const userSchema = new mongoose.Schema({
     type: String,
     default: "/uploads/clothes.jpg",
   },
+  coursesTeaching: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Course", // Reference to the Course model
+    },
+  ],
+  coursesEnrolled: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Course", // Reference to the Course model
+    },
+  ],
 });
 
 module.exports = mongoose.model("User", userSchema);

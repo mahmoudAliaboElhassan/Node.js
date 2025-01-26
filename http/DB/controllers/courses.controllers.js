@@ -1,5 +1,6 @@
 const { validationResult } = require("express-validator");
 const Course = require("../models/course.model");
+const User = require("../models/user.model");
 const httpStatusText = require("../utils/httpStatusText");
 const { DOCUMENTSPERSPAGE } = require("../utils/constants");
 const asyncWrapper = require("../middlewares/asyncWrapper");
@@ -25,7 +26,9 @@ const getAllCourses = asyncWrapper(async (req, res) => {
     ? { title: { $regex: search, $options: "i" } } // Case-insensitive regex search
     : {};
 
-  const courses = await Course.find(searchQuery, "title")
+  // const courses = await Course.find(searchQuery, "title")
+  const courses = await Course.find(searchQuery)
+    .sort({ title: -1 })
     .limit(DOCUMENTSPERSPAGE)
     .skip((page - 1) * DOCUMENTSPERSPAGE);
 
@@ -56,6 +59,19 @@ const getSingleCourse = asyncWrapper(async (req, res, next) => {
 });
 
 const addCourse = asyncWrapper(async (req, res, next) => {
+  const { title, description, instructorId } = req.body;
+
+  const instructor = await User.findById(instructorId);
+  // id can come from cookies
+  if (!instructor || instructor.role !== "MANAGER") {
+    const error = appError.create(
+      "user is not found or not manager",
+      400,
+      httpStatusText.FAIL
+    );
+    return next(error);
+  }
+
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
     // return res.status(400).json({
@@ -65,8 +81,15 @@ const addCourse = asyncWrapper(async (req, res, next) => {
     appError.create(errors.array(), 400, httpStatusText.FAIL);
     return next(appError);
   }
-  const course = new Course(req.body);
+  const course = new Course({
+    title,
+    description,
+    instructor: instructorId,
+  });
+
   await course.save();
+  instructor.coursesTeaching.push(course._id);
+  await instructor.save();
   res.status(201).json({ status: httpStatusText.SUCESS, data: { course } });
 });
 
@@ -116,12 +139,55 @@ const deleteCourse = asyncWrapper(async (req, res, next) => {
   res.send({ status: "success", data: null });
 });
 
+const registerCourse = async (req, res, next) => {
+  try {
+    const { courseId, studentId } = req.body;
+    const errors = validationResult(req);
+
+    if (!errors.isEmpty()) {
+      const error = appError.create(errors.array(), 400, "Validation failed");
+      return next(error);
+    }
+
+    const course = await Course.findById(courseId);
+    const student = await User.findById(studentId);
+
+    if (!course || !student) {
+      const error = appError.create(
+        "Course or student not found",
+        404,
+        "Not Found"
+      );
+      return next(error);
+    }
+    console.log("course", course);
+    console.log("student", student);
+    if (!course.students.includes(studentId)) {
+      course.students.push(studentId);
+      await course.save();
+    }
+
+    if (!student.coursesEnrolled.includes(courseId)) {
+      student.coursesEnrolled.push(courseId);
+      await student.save();
+    }
+
+    res.status(200).json({
+      status: "success",
+      data: { message: "Course added successfully" },
+    });
+  } catch (err) {
+    next(err); // Pass unexpected errors to the global error handler
+  }
+};
+
 module.exports = {
   getAllCourses,
   addCourse,
   getSingleCourse,
   updateCourse,
   deleteCourse,
+  registerCourse,
 };
 
 // find {name: "mahmoud", age: 1} => select name, age from collection => query filter
@@ -149,3 +215,7 @@ module.exports = {
 // page n => skip (n-1)*NoOfDocumentsPerPage, limit NoOfDocumentsPerPage
 
 // aasyncWrapper is a function that takes a function  that takes req, res, next and returns a function
+
+// User.find({ name: { $regex: '^Jo', $options: 'i' } }) // '^' matches the beginning
+// User.find({ name: { $regex: 'hn$', $options: 'i' } }) // '$' matches the end
+// User.find({ name: { $regex: 'John', $options: 'i' }, age: { $gte: 18 } })

@@ -22,8 +22,23 @@ const validationSchemaLogin = () => {
     body("password").notEmpty().withMessage("password can not be empty"),
   ];
 };
+
+const validateRegisterCourse = () => [
+  body("courseId")
+    .notEmpty()
+    .withMessage("course id can not be empty")
+    .isMongoId()
+    .withMessage("Invalid Course ID"),
+  body("studentId")
+    .notEmpty()
+    .withMessage("student id can not be empty")
+    .isMongoId()
+    .withMessage("Invalid Student ID"),
+];
+
 module.exports = {
   validationSchemaAddCourse,
   validationSchemaEditCourse,
   validationSchemaLogin,
+  validateRegisterCourse,
 };

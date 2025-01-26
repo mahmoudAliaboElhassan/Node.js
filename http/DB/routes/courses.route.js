@@ -22,5 +22,12 @@ router
     validationSchema.validationSchemaEditCourse(),
     coursesController.updateCourse
   )
-  .delete(verifyAdmin, coursesController.deleteCourse);
+  .delete(verifyAdmin);
+
+router
+  .route("/register")
+  .post(
+    validationSchema.validateRegisterCourse(),
+    coursesController.registerCourse
+  );
 module.exports = router;

@@ -6,6 +6,7 @@ const appError = require("../utils/appError");
 const User = require("../models/user.model");
 const bcrypt = require("bcrypt");
 const generateJWT = require("../utils/generateToken");
+const jwt = require("jsonwebtoken");
 
 const getAllUsers = asyncWrapper(async (req, res) => {
   const page = req.query.page || 1;
@@ -24,7 +25,7 @@ const getAllUsers = asyncWrapper(async (req, res) => {
 });
 
 const signUp = asyncWrapper(async (req, res, next) => {
-  console.log("req.file", req.file);
+  console.log("req.file", req?.file);
   const { firstName, lastName, email, password, role } = req.body;
   const existUser = await User.find({ email: email });
   //   if (existUser.length > 0) {
@@ -45,7 +46,7 @@ const signUp = asyncWrapper(async (req, res, next) => {
     email: email,
     role: role,
     password: hashedPassword,
-    avatar: req.file.filename,
+    avatar: req?.file?.filename,
   });
   // const token = await generateJWT({
   //   email: user.email,
@@ -125,7 +126,58 @@ const logOut = asyncWrapper(async (req, res, next) => {
   });
 });
 
-module.exports = { getAllUsers, signUp, login, logOut };
+const change_password = asyncWrapper(async (req, res, next) => {
+  const token = req.cookies.JwtToken;
+  const { id } = req.params;
+  const { password, newPassword } = req.body;
+  const user = await User.findOne({ _id: id });
+  const decoded = jwt.verify(token, process.env.JWT_SECRET_KEY);
+  console.log("decoded", decoded);
+  console.log("decoded.id", decoded.id);
+  console.log("user", user);
+  console.log("user.id", user._id.toString());
+  if (!user) {
+    const error = appError.create(
+      "This user is not exists",
+      404,
+      httpStatusText.FAIL
+    );
+    return next(error);
+  }
+
+  if (decoded.id != user._id) {
+    const error = appError.create(
+      "user himself only can change email",
+      403,
+      httpStatusText.FAIL
+    );
+    return next(error);
+  }
+
+  const passwordMatch = await bcrypt.compare(password, user.password);
+
+  if (!passwordMatch) {
+    const error = appError.create(
+      "password does not match",
+      400,
+      httpStatusText.FAIL
+    );
+    return next(error);
+  }
+
+  const hashedPassword = await bcrypt.hash(newPassword, 10);
+
+  // Update the password
+  await User.findByIdAndUpdate(id, { password: hashedPassword });
+  res.json({
+    staus: httpStatusText.SUCESS,
+    data: {
+      message: "user password updated successfully",
+    },
+  });
+});
+
+module.exports = { getAllUsers, signUp, login, logOut, change_password };
 
 // roles of api is to be stateless and not to store any information about the user
 // the user should send the token with each request
