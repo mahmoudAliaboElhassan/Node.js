@@ -197,3 +197,19 @@ module.exports = { getAllUsers, signUp, login, logOut, change_password };
 //  for handling multipart/form-data, which is primarily used for uploading files
 
 //multer needs frontend to be multipart form data
+
+// populate is a method used to replace a referenced field (usually an ObjectId) in a document with the actual data from the referenced document. This is particularly useful when you are working with MongoDB relationships (like one-to-many or many-to-many) and you want to retrieve data from multiple collections in a single query.
+
+// const post = await Post.findOne({ title: 'Mongoose Populate Example' })
+//   .populate('author', 'name email'); // Include only `name` and `email` from User
+
+// populate multiple fields
+// const comment = await Comment.find()
+//   .populate('post')
+//   .populate('user');
+
+// select specified filelds
+// .populate({
+//   path: 'author',
+//   populate: { path: 'profile', select: 'bio' }, // Assuming profile is another reference
+// });

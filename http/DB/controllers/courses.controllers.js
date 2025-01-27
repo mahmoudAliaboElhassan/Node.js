@@ -37,7 +37,9 @@ const getAllCourses = asyncWrapper(async (req, res) => {
 
 const getSingleCourse = asyncWrapper(async (req, res, next) => {
   const courseId = req.params.id;
-  const course = await Course.findById(courseId);
+  // populate encompass all the model that is its key is instructor and
+  // show its ref
+  const course = await Course.findById(courseId).populate("instructor");
   // object id is consisted of 12 bytes which are
   // 4 bytes timestamp, 5 bytes random value, 3 bytes increment value
   // const course = await Course.find({_id: courseId});
@@ -60,7 +62,7 @@ const getSingleCourse = asyncWrapper(async (req, res, next) => {
 
 const addCourse = asyncWrapper(async (req, res, next) => {
   const { title, description, instructorId } = req.body;
-
+  console.log("instructor user collection", instructorId.populate);
   const instructor = await User.findById(instructorId);
   // id can come from cookies
   if (!instructor || instructor.role !== "MANAGER") {
@@ -139,7 +141,7 @@ const deleteCourse = asyncWrapper(async (req, res, next) => {
   res.send({ status: "success", data: null });
 });
 
-const registerCourse = async (req, res, next) => {
+const registerCourse = asyncWrapper(async (req, res, next) => {
   try {
     const { courseId, studentId } = req.body;
     const errors = validationResult(req);
@@ -179,7 +181,7 @@ const registerCourse = async (req, res, next) => {
   } catch (err) {
     next(err); // Pass unexpected errors to the global error handler
   }
-};
+});
 
 module.exports = {
   getAllCourses,

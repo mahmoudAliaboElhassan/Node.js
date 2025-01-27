@@ -27,6 +27,7 @@ router
 router
   .route("/register")
   .post(
+    verifyToken,
     validationSchema.validateRegisterCourse(),
     coursesController.registerCourse
   );
