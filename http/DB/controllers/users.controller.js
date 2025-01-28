@@ -177,7 +177,13 @@ const change_password = asyncWrapper(async (req, res, next) => {
   });
 });
 
-module.exports = { getAllUsers, signUp, login, logOut, change_password };
+module.exports = {
+  getAllUsers,
+  signUp,
+  login,
+  logOut,
+  change_password,
+};
 
 // roles of api is to be stateless and not to store any information about the user
 // the user should send the token with each request

@@ -49,4 +49,5 @@ router.route("/logout").get(usersController.logOut);
 router
   .route("/change-password/:id")
   .put(verifyToken, usersController.change_password);
+
 module.exports = router;

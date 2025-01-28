@@ -44,16 +44,22 @@ console.log("direname", __dirname);
 //  represents the absolute directory path of the current JavaScript file.
 // Combining __dirname with "uploads" gives the absolute path to the uploads folder in your project.
 app.use(cookieParser());
+
+app.set("view engine", "ejs");
+app.use(express.urlencoded({ extended: false }));
+// to deal with forms email comes from view
 app.get("/", (req, res) => {
   res.send("home page");
 });
 
 const coursesRouter = require("./routes/courses.route");
 const usersRouter = require("./routes/users.route");
+const userPasswordRouter = require("./routes/users-password.route");
 // to make it to specific route
 // app.use("/api/courses", cors(), coursesRouter);
 app.use("/api/courses", coursesRouter);
 app.use("/api/users", usersRouter);
+app.use("/users", userPasswordRouter);
 
 app.all("*", (req, res, next) => {
   // every request will pass through this middleware
@@ -155,3 +161,9 @@ app.listen(process.env.PORT, () => {
 // app.get("/products/:id", cors(), function (req, res, next) {
 //   res.json({ msg: "This is CORS-enabled for a Single Route" });
 // });
+
+// express can be api or mvc
+// MVC for web only it send view to the server
+// view in mvc is server side rendering
+// ejs or pug
+// template engine

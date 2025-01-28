@@ -31,4 +31,5 @@ router
     validationSchema.validateRegisterCourse(),
     coursesController.registerCourse
   );
+
 module.exports = router;
