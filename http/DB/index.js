@@ -6,6 +6,9 @@ const express = require("express");
 const morgan = require("morgan");
 const mongoose = require("mongoose");
 var cors = require("cors");
+
+// helmet for header configuration
+const helmet = require("helmet");
 const cookieParser = require("cookie-parser");
 
 const httpStatusText = require("./utils/httpStatusText");
@@ -29,6 +32,7 @@ app.use(cors());
 // app.use(cors()) => to allow all origins
 app.use(express.json());
 app.use(morgan("dev"));
+app.use(helmet());
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 console.log("path", path.join(__dirname, "uploads"));
 // direname is current directory
@@ -161,6 +165,13 @@ app.listen(process.env.PORT, () => {
 // app.get("/products/:id", cors(), function (req, res, next) {
 //   res.json({ msg: "This is CORS-enabled for a Single Route" });
 // });
+
+// to sepecify sepecific origin
+// app.use(
+//   cors({
+//     origin: "http://localhost:3000",
+//   })
+// );
 
 // express can be api or mvc
 // MVC for web only it send view to the server

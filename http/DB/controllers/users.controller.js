@@ -74,7 +74,7 @@ const login = asyncWrapper(async (req, res, next) => {
     return next(error);
   }
 
-  const user = await User.findOne({ email: email });
+  const user = await User.findOne({ email: email }).populate("coursesEnrolled");
   if (user) {
     const passwordMatch = await bcrypt.compare(password, user.password);
 
