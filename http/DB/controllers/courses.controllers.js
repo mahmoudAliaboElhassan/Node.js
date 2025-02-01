@@ -17,6 +17,17 @@ const appError = require("../utils/appError");
 //   res.json({ status: httpStatusText.SUCESS, data: { courses } });
 // });
 
+
+
+
+/**
+ * get All Courses
+ */
+
+
+
+
+
 const getAllCourses = asyncWrapper(async (req, res) => {
   const page = req.query.page || 1;
   const search = req.query.search || ""; // Get the search term from query params
@@ -221,3 +232,8 @@ module.exports = {
 // User.find({ name: { $regex: '^Jo', $options: 'i' } }) // '^' matches the beginning
 // User.find({ name: { $regex: 'hn$', $options: 'i' } }) // '$' matches the end
 // User.find({ name: { $regex: 'John', $options: 'i' }, age: { $gte: 18 } })
+// User.find({age:{$eq:5}}) not equal 5
+// User.find({age:{$ne:5}}) not equal 5
+// User.find({age:{$in:[1,2,3,4]}}) in the array
+// User.find({age:{$nin:[1,2,3,4]}}) not in the array
+// User.find({age:{$gte:minAge,$lte:maxPrice}}) between specific range

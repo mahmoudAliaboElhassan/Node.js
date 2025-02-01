@@ -3,6 +3,7 @@ const { body } = require("express-validator");
 const validationSchemaAddCourse = () => {
   return [body("title").notEmpty().withMessage("can not be empty")];
 };
+
 const validationSchemaEditCourse = () => {
   return [
     body("title")
@@ -12,6 +13,7 @@ const validationSchemaEditCourse = () => {
     body("price").optional(), // Make price optional
   ];
 };
+
 const validationSchemaLogin = () => {
   return [
     body("email")

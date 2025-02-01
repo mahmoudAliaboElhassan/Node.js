@@ -39,12 +39,13 @@ const fileFilterFn = (req, file, cb) => {
 
 const upload = multer({
   storage: diskStorage,
-  fileFilter: fileFilterFn,
+  // fileFilter: fileFilterFn,
 });
 
 router.route("/").get(verifyToken, usersController.getAllUsers);
 router.route("/register").post(upload.single("avatar"), usersController.signUp);
 router.route("/login").post(validationSchemaLogin(), usersController.login);
+router.route("/video").post(upload.single("video"), usersController.video);
 router.route("/logout").get(usersController.logOut);
 router
   .route("/change-password/:id")

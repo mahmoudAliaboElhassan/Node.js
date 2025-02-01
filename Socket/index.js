@@ -48,7 +48,7 @@ io.on("connection", (socket) => {
 // broadcasating when server receive messages from client it should send it
 // to the rest of clients as chat
 
-app.post("/api/users", (req, res) => {
+app.post("/api/send", (req, res) => {
   // Emit the event to all connected users
   io.emit("send", "hello mahmoud");
   res.status(200).json({ message: "Event emitted successfully" });

@@ -59,11 +59,16 @@ app.get("/", (req, res) => {
 const coursesRouter = require("./routes/courses.route");
 const usersRouter = require("./routes/users.route");
 const userPasswordRouter = require("./routes/users-password.route");
+const videoRouter = require("./routes/video.route");
+const examRouter = require("./routes/exam.route");
+
 // to make it to specific route
 // app.use("/api/courses", cors(), coursesRouter);
 app.use("/api/courses", coursesRouter);
 app.use("/api/users", usersRouter);
 app.use("/users", userPasswordRouter);
+app.use("/api/videos", videoRouter);
+app.use("/api/exams", examRouter);
 
 app.all("*", (req, res, next) => {
   // every request will pass through this middleware

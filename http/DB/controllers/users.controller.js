@@ -176,6 +176,10 @@ const change_password = asyncWrapper(async (req, res, next) => {
     },
   });
 });
+const video = asyncWrapper(async (req, res, nex) => {
+  console.log(req.file);
+  res.send(req.file);
+});
 
 module.exports = {
   getAllUsers,
@@ -183,6 +187,7 @@ module.exports = {
   login,
   logOut,
   change_password,
+  video,
 };
 
 // roles of api is to be stateless and not to store any information about the user
