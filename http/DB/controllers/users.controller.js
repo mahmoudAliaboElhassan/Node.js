@@ -19,7 +19,8 @@ const getAllUsers = asyncWrapper(async (req, res) => {
 
   const users = await User.find(searchQuery, { __v: false, password: false })
     .limit(DOCUMENTSPERSPAGE)
-    .skip((page - 1) * DOCUMENTSPERSPAGE);
+    .skip((page - 1) * DOCUMENTSPERSPAGE)
+    .populate("posts");
 
   res.json({ status: httpStatusText.SUCESS, data: { users } });
 });
@@ -74,9 +75,12 @@ const login = asyncWrapper(async (req, res, next) => {
     return next(error);
   }
 
-  const user = await User.findOne({ email: email }).populate("coursesEnrolled");
+  const user = await User.findOne({ email: email })
+    .populate("coursesEnrolled")
+    .populate("posts");
   if (user) {
     const passwordMatch = await bcrypt.compare(password, user.password);
+    console.log(user.posts);
 
     if (passwordMatch) {
       const token = await generateJWT({

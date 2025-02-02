@@ -55,12 +55,14 @@ app.use(express.urlencoded({ extended: false }));
 app.get("/", (req, res) => {
   res.send("home page");
 });
+const Data = require("./models/data.model");
 
 const coursesRouter = require("./routes/courses.route");
 const usersRouter = require("./routes/users.route");
 const userPasswordRouter = require("./routes/users-password.route");
 const videoRouter = require("./routes/video.route");
 const examRouter = require("./routes/exam.route");
+const postRouter = require("./routes/post.route");
 
 // to make it to specific route
 // app.use("/api/courses", cors(), coursesRouter);
@@ -69,6 +71,7 @@ app.use("/api/users", usersRouter);
 app.use("/users", userPasswordRouter);
 app.use("/api/videos", videoRouter);
 app.use("/api/exams", examRouter);
+app.use("/api/post", postRouter);
 
 app.all("*", (req, res, next) => {
   // every request will pass through this middleware
@@ -183,3 +186,7 @@ app.listen(process.env.PORT, () => {
 // view in mvc is server side rendering
 // ejs or pug
 // template engine
+
+const data = new Data({ firstName: "John", lastName: "Doe" });
+console.log("data.fullName");
+console.log(data.fullName); // Output: "John Doe"
