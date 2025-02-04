@@ -41,7 +41,7 @@ module.exports = (req, res, next) => {
     console.log(decoded);
     next();
   } catch (err) {
-    const error = appError.create("Invalid token", 401, httpStatusText.FAIL);
+    const error = appError.create("Invalid token", 403, httpStatusText.FAIL);
     return next(error);
   }
 };

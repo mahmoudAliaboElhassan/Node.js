@@ -28,8 +28,20 @@ mongoose
 const app = express();
 const path = require("path");
 
-app.use(cors());
-// app.use(cors()) => to allow all origins
+app.use(
+  cors({
+    origin: "http://localhost:3000",
+    credentials: true, // Allow cookies to be sent and received
+  })
+);
+// look at test component in graduation project to know how token is kept in cookies
+
+// credentials: true: This tells the server to allow credentials (cookies, authorization headers, etc.) to be sent with the request. In particular:
+
+// When you set withCredentials: true on the frontend (as we saw in the axiosInstance), this means that the browser will automatically include cookies in requests made to the server.
+// On the backend, the server must also be configured to accept credentials (by setting credentials: true in the CORS configuration). If this is not set, the browser will block the cookies from being sent to the server.
+
+// // app.use(cors()) => to allow all origins
 app.use(express.json());
 app.use(morgan("dev"));
 app.use(helmet());
@@ -67,7 +79,7 @@ const postRouter = require("./routes/post.route");
 // to make it to specific route
 // app.use("/api/courses", cors(), coursesRouter);
 app.use("/api/courses", coursesRouter);
-app.use("/api/users", usersRouter);
+app.use("/api/users", cors(), usersRouter);
 app.use("/users", userPasswordRouter);
 app.use("/api/videos", videoRouter);
 app.use("/api/exams", examRouter);

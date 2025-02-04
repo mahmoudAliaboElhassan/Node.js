@@ -5,8 +5,13 @@ const asyncWrapper = require("../middlewares/asyncWrapper");
 const appError = require("../utils/appError");
 const User = require("../models/user.model");
 const bcrypt = require("bcrypt");
-const generateJWT = require("../utils/generateToken");
+const {
+  generateAccessToken,
+  generateRefreshToken,
+} = require("../utils/generateToken");
 const jwt = require("jsonwebtoken");
+
+const refreshTokens = [];
 
 const getAllUsers = asyncWrapper(async (req, res) => {
   const page = req.query.page || 1;
@@ -83,7 +88,7 @@ const login = asyncWrapper(async (req, res, next) => {
     console.log(user.posts);
 
     if (passwordMatch) {
-      const token = await generateJWT({
+      const token = await generateAccessToken({
         email: user.email,
         id: user._id,
         role: user.role,
@@ -92,6 +97,9 @@ const login = asyncWrapper(async (req, res, next) => {
       // without putting token in cookie i will want to send authorization token in
       // headers in every route that need access
       res.cookie("JwtToken", token);
+      // Cookies: Can be set with the HttpOnly flag, which makes them inaccessible to JavaScript (they can only be sent automatically with HTTP requests).
+      // If you want to keep the token secure from client-side access, you would prefer cookies with HttpOnly and Secure flags over localStorage
+
       console.log(req.cookies);
       res
         .status(200)
