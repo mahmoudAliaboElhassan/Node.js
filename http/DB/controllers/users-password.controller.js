@@ -5,6 +5,12 @@ const httpStatusText = require("../utils/httpStatusText");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
 const nodemailer = require("nodemailer");
+const { render } = require("@react-email/components");
+
+const renderReact = require("react-node-render");
+// render here to render jsx to html
+// const WelcomeEmail = require("../email/portfolio-react/src/components/header");
+// console.log("welcome", WelcomeEmail);
 
 // front
 const getForgetPage = asyncWrapper((req, res, next) => {
@@ -25,6 +31,7 @@ const sendForgotPasswordLink = asyncWrapper(async (req, res, next) => {
   });
   const link = `http://localhost:4000/users/password/reset-password/${user._id}/${token}`;
 
+  // const emailHtml = await renderReact("../email-front/src/components/email.js");
   const transporter = nodemailer.createTransport({
     service: "gmail",
     auth: {
@@ -48,7 +55,8 @@ const sendForgotPasswordLink = asyncWrapper(async (req, res, next) => {
   Click here
 </a>
 
-    </div>`,
+    </div>  
+    ${render("../email/portfolio-react/src/components/email")} `,
   };
   transporter.sendMail(mailOptions, (err, success) => {
     if (err) {

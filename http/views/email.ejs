@@ -1,0 +1,24 @@
+<script src="//unpkg.com/react@16/umd/react.development.js"></script>
+<script src="//unpkg.com/react-dom@16/umd/react-dom.development.js"></script>
+<!-- for imported scripts -->
+<script src="//unpkg.com/@babel/standalone/babel.min.js"></script>
+
+<div id="app"></div>
+<script type="text/babel">
+  const { React, ReactDOM } = window;
+  function App() {
+    return (
+      <div class="col-md-6 col-sm-6 col-xs-7">
+        <ul>
+          <li>
+            <span class="point">Name:</span>{" "}
+          </li>
+          <li>
+            <span class="point">Email:</span>{" "}
+          </li>
+        </ul>
+      </div>
+    );
+  }
+  ReactDOM.render(<App />, document.getElementById("app"));
+</script>

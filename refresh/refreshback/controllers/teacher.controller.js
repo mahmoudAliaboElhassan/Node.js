@@ -5,7 +5,7 @@ const jwt = require("jsonwebtoken");
 
 const generateAccessToken = (userId) => {
   return jwt.sign({ userId }, process.env.ACCESS_TOKEN_SECRET, {
-    expiresIn: "40s",
+    expiresIn: "1m",
   }); // Access token expires in 35 minutes
 };
 
@@ -45,15 +45,24 @@ exports.login = async (req, res) => {
     if (!isPasswordValid)
       return res.status(400).json({ message: "Invalid credentials" });
 
+    // ============================================
+    // for cookies while activating credential between both front and back
+    // const JwtToken = generateAccessToken(teacher._id);
+    // res.cookie("JwtToken", JwtToken, {
+    //   httpOnly: true,
+    //   secure: false, // Change to `true` in production (requires HTTPS)
+    //   sameSite: "strict",
+    // });
+    // =====================================
     const accessToken = generateAccessToken(teacher._id);
     const refreshToken = generateRefreshToken(teacher._id);
-
     res.cookie("refreshToken", refreshToken, {
       httpOnly: true,
       secure: false, // Change to `true` in production (requires HTTPS)
       sameSite: "strict",
     });
 
+    // console.log("req.cookies", req.cookies);
     res.json({ accessToken });
   } catch (error) {
     console.log(error);
@@ -64,12 +73,16 @@ exports.login = async (req, res) => {
 exports.refreshToken = async (req, res) => {
   try {
     const refreshToken = req.cookies.refreshToken;
-    if (!refreshToken) return res.status(401).json({ message: "Unauthorized" });
+    if (!refreshToken) {
+      console.log("not token from refrsh in cookies");
+      return res.status(401).json({ message: "Unauthorized" });
+    }
 
     jwt.verify(
       refreshToken,
       process.env.REFRESH_TOKEN_SECRET,
       (err, decoded) => {
+        console.log("token from verify in refresh is invalid");
         if (err) return res.status(403).json({ message: "Forbidden" });
 
         const newAccessToken = generateAccessToken(decoded.userId);

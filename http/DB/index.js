@@ -116,9 +116,11 @@ app.use((err, req, res, next) => {
 });
 // error here comes from asyncWrapper.js => next(err) => next(err) => this middleware
 
-const PORT = 4000;
-app.listen(process.env.PORT, () => {
-  console.log(`running on port ${PORT}`);
+
+
+
+ app.listen(process.env.PORT, () => {
+  console.log(`running on port ${process.env.PORT}`);
 });
 
 // const { MongoClient } = require("mongodb");
