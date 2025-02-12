@@ -45,25 +45,33 @@ exports.login = async (req, res) => {
     if (!isPasswordValid)
       return res.status(400).json({ message: "Invalid credentials" });
 
-    // ============================================
-    // for cookies while activating credential between both front and back
-    // const JwtToken = generateAccessToken(teacher._id);
-    // res.cookie("JwtToken", JwtToken, {
-    //   httpOnly: true,
-    //   secure: false, // Change to `true` in production (requires HTTPS)
-    //   sameSite: "strict",
-    // });
-    // =====================================
-    const accessToken = generateAccessToken(teacher._id);
+    // ========= in case of using cookies but verify credential in both =========
     const refreshToken = generateRefreshToken(teacher._id);
     res.cookie("refreshToken", refreshToken, {
       httpOnly: true,
       secure: false, // Change to `true` in production (requires HTTPS)
       sameSite: "strict",
     });
+    const JwtToken = generateAccessToken(teacher._id);
+    res.cookie("JwtToken", JwtToken, {
+      httpOnly: true,
+      secure: false, // Change to `true` in production (requires HTTPS)
+      sameSite: "strict",
+    });
+    console.log("req.cookies", req.cookies);
+    res.json({ message: "logged in successfully" });
+    // ==========================================================================
 
-    // console.log("req.cookies", req.cookies);
-    res.json({ accessToken });
+    // ====================in case of using headers =========================
+    // const accessToken = generateAccessToken(teacher._id);
+    // const refreshToken = generateRefreshToken(teacher._id);
+    // res.cookie("refreshToken", refreshToken, {
+    //   httpOnly: true,
+    //   secure: false, // Change to `true` in production (requires HTTPS)
+    //   sameSite: "strict",
+    // });
+    // res.json({ accessToken });
+    // =====================================================================
   } catch (error) {
     console.log(error);
     res.status(500).json({ message: "Error logging in", error });
@@ -74,19 +82,36 @@ exports.refreshToken = async (req, res) => {
   try {
     const refreshToken = req.cookies.refreshToken;
     if (!refreshToken) {
-      console.log("not token from refrsh in cookies");
-      return res.status(401).json({ message: "Unauthorized" });
+      return res
+        .status(401)
+        .json({ message: "no refresh token in cookies please login" });
     }
 
     jwt.verify(
       refreshToken,
       process.env.REFRESH_TOKEN_SECRET,
       (err, decoded) => {
-        console.log("token from verify in refresh is invalid");
-        if (err) return res.status(403).json({ message: "Forbidden" });
+        if (err) {
+          console.log("Invalid refresh token");
+          return res
+            .status(403)
+            .json({ message: "please login refresh token in cookies expired" });
+        }
+        // ==================in case of using headers ====================
+        // const newAccessToken = generateAccessToken(decoded.userId);
+        // res.json({ accessToken: newAccessToken });
+        // ==================in case of using headers ====================
 
-        const newAccessToken = generateAccessToken(decoded.userId);
-        res.json({ accessToken: newAccessToken });
+        // ==================in case of using cookies ====================
+        const JwtToken = generateAccessToken(decoded._id);
+        res.cookie("JwtToken", JwtToken, {
+          httpOnly: true,
+          secure: false, // Change to `true` in production (requires HTTPS)
+          sameSite: "strict",
+        });
+        console.log("jwt token updated");
+        res.json({ message: "token refreshed" });
+        // ==================in case of using headers ====================
       }
     );
   } catch (error) {
