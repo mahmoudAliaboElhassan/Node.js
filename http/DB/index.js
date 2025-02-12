@@ -75,6 +75,7 @@ const userPasswordRouter = require("./routes/users-password.route");
 const videoRouter = require("./routes/video.route");
 const examRouter = require("./routes/exam.route");
 const postRouter = require("./routes/post.route");
+const orderRouter = require("./routes/order.route");
 
 // to make it to specific route
 // app.use("/api/courses", cors(), coursesRouter);
@@ -84,6 +85,7 @@ app.use("/users", userPasswordRouter);
 app.use("/api/videos", videoRouter);
 app.use("/api/exams", examRouter);
 app.use("/api/post", postRouter);
+app.use("/api/orders", orderRouter);
 
 app.all("*", (req, res, next) => {
   // every request will pass through this middleware
@@ -116,10 +118,7 @@ app.use((err, req, res, next) => {
 });
 // error here comes from asyncWrapper.js => next(err) => next(err) => this middleware
 
-
-
-
- app.listen(process.env.PORT, () => {
+app.listen(process.env.PORT, () => {
   console.log(`running on port ${process.env.PORT}`);
 });
 

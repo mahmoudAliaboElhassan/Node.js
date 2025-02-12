@@ -22,7 +22,7 @@ router
     validationSchema.validationSchemaEditCourse(),
     coursesController.updateCourse
   )
-  .delete(verifyAdmin);
+  .delete(verifyAdmin, coursesController.deleteCourse);
 
 router
   .route("/register")
