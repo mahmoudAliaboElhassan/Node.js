@@ -4,12 +4,11 @@ const generateAccessToken = async (payload) => {
   const token = await jwt.sign(payload, process.env.JWT_SECRET_KEY, {
     expiresIn: "5m",
   });
-  console.log("from function", token);
   return token;
 };
 const generateRefreshToken = async (payload) => {
   const token = await jwt.sign(payload, process.env.JWT_SECRET_KEY, {
-    expiresIn: "10ة",
+    expiresIn: "10m",
   });
   console.log("from function", token);
   return token;

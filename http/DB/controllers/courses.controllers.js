@@ -17,16 +17,9 @@ const appError = require("../utils/appError");
 //   res.json({ status: httpStatusText.SUCESS, data: { courses } });
 // });
 
-
-
-
 /**
  * get All Courses
  */
-
-
-
-
 
 const getAllCourses = asyncWrapper(async (req, res) => {
   const page = req.query.page || 1;

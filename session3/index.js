@@ -4,7 +4,8 @@ console.log("Thread pool size:", process.env.UV_THREADPOOL_SIZE || 4);
 
 console.log("Hello from session 3");
 // libuv is the event loop library that Node.js uses to handle asynchronous operations
-// Node.js is single-threaded, but it uses multiple threads in the background to handle asynchronous operations
+// Node.js is single-threaded, but it uses multiple threads in the background to
+//  handle asynchronous operations
 // asynchronous operation is an operation that runs in the background
 // and notifies the main thread when it's done
 
@@ -48,10 +49,12 @@ crypto.pbkdf2("secret", "salt", 100000, 64, "sha512", (err, derivedKey) => {
 
 // threadpool is a pool of threads that Node.js uses to execute tasks in the background
 // by default, the threadpool has 4 threads
-// it is primarily used by libuv to handle asynchronous operations like file system operations, network requests, etc.
+// it is primarily used by libuv to handle asynchronous operations like file system operations,
+// network requests, etc.
 // its size can be changed using the UV_THREADPOOL_SIZE environment variable
 // UV_THREADPOOL_SIZE=5 node index.js
-// 1024 threads in the threadpool is the maximum number of threads that can be created in a single process
+// 1024 threads in the threadpool is the maximum number of threads that can be created in
+// a single process
 // the threadpool is shared across all Node.js processes
 // if it is full, the tasks are queued until a thread becomes available
 

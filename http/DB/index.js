@@ -20,7 +20,7 @@ mongoose
     console.log("connected Successfully ");
   })
   .catch((err) => {
-    console.log(err);
+    console.log("err in connection", error);
   });
 // "mongodb+srv://mahmoudjsdev:node.js_123@learn-mongo-db.fa990.mongodb.net/mahmoudzone?retryWrites=true&w=majority&appName=learn-mongo-db"
 // here i connected to database directly
@@ -76,6 +76,8 @@ const videoRouter = require("./routes/video.route");
 const examRouter = require("./routes/exam.route");
 const postRouter = require("./routes/post.route");
 const orderRouter = require("./routes/order.route");
+const messageRouter = require("./routes/message.route");
+const studentRouter = require("./routes/student.route");
 
 // to make it to specific route
 // app.use("/api/courses", cors(), coursesRouter);
@@ -86,7 +88,9 @@ app.use("/api/videos", videoRouter);
 app.use("/api/exams", examRouter);
 app.use("/api/post", postRouter);
 app.use("/api/orders", orderRouter);
-
+app.use("/api/message/send", messageRouter);
+app.use("/api/students", studentRouter);
+ 
 app.all("*", (req, res, next) => {
   // every request will pass through this middleware
   res.status(404).json({
@@ -203,3 +207,4 @@ app.listen(process.env.PORT, () => {
 const data = new Data({ firstName: "John", lastName: "Doe" });
 console.log("data.fullName");
 console.log(data.fullName); // Output: "John Doe"
+

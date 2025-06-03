@@ -14,16 +14,19 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@faker-js/faker": "^9.8.0",
     "@react-email/components": "^0.0.32",
     "@react-email/render": "^1.0.4",
+    "@vonage/server-sdk": "^3.21.0",
     "bcrypt": "^5.1.1",
-    "cloudinary": "^2.5.1",
+    "cloudinary": "^1.21.0",
     "cookie-parser": "^1.4.7",
     "cors": "^2.8.5",
     "dotenv": "^16.4.7",
     "ejs": "^3.1.10",
     "express": "^4.21.2",
     "express-validator": "^7.2.1",
+    "faker": "^6.6.6",
     "helmet": "^8.0.0",
     "jsend": "^1.1.0",
     "jsonwebtoken": "^9.0.2",
@@ -37,6 +40,7 @@
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "react-node-render": "^0.0.7",
+    "twilio": "^5.6.0",
     "validator": "^13.12.0"
   }
 }

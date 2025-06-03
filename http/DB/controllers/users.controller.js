@@ -65,6 +65,8 @@ const signUp = asyncWrapper(async (req, res, next) => {
   res.status(201).json({ status: httpStatusText.SUCESS, data: { user } });
 });
 
+// Authentication
+
 const login = asyncWrapper(async (req, res, next) => {
   const { email, password } = req.body;
   const errors = validationResult(req);
@@ -80,12 +82,9 @@ const login = asyncWrapper(async (req, res, next) => {
     return next(error);
   }
 
-  const user = await User.findOne({ email: email })
-    .populate("coursesEnrolled")
-    .populate("posts");
+  const user = await User.findOne({ email: email });
   if (user) {
     const passwordMatch = await bcrypt.compare(password, user.password);
-    console.log(user.posts);
 
     if (passwordMatch) {
       const token = await generateAccessToken({
@@ -94,13 +93,7 @@ const login = asyncWrapper(async (req, res, next) => {
         role: user.role,
       });
 
-      // without putting token in cookie i will want to send authorization token in
-      // headers in every route that need access
       res.cookie("JwtToken", token);
-      // Cookies: Can be set with the HttpOnly flag, which makes them inaccessible to JavaScript (they can only be sent automatically with HTTP requests).
-      // If you want to keep the token secure from client-side access, you would prefer cookies with HttpOnly and Secure flags over localStorage
-
-      console.log(req.cookies);
       res
         .status(200)
         .json({ status: httpStatusText.SUCESS, data: { user, token } });

@@ -5,7 +5,7 @@ const express = require("express");
 const app = express();
 
 const cookieParser = require("cookie-parser");
-const morgan = require("morgan");
+// const morgan = require("morgan");
 const mongoose = require("mongoose");
 const url = process.env.MONGO_URL;
 
@@ -28,13 +28,15 @@ app.use(
 );
 
 const teacherRouter = require("./routes/teacher.route");
+const messageRouter = require("./routes/message.route");
 
 app.use(express.json());
 app.use(cookieParser());
 
-app.use(morgan("dev"));
+// app.use(morgan("dev"));
 
 app.use("/api/teachers", teacherRouter);
+app.use("/api/message", messageRouter);
 
 app.listen(5000, () => {
   console.log("server established");
