@@ -78,6 +78,7 @@ const postRouter = require("./routes/post.route");
 const orderRouter = require("./routes/order.route");
 const messageRouter = require("./routes/message.route");
 const studentRouter = require("./routes/student.route");
+const AIRouter = require("./routes/ai.route");
 
 // to make it to specific route
 // app.use("/api/courses", cors(), coursesRouter);
@@ -90,7 +91,8 @@ app.use("/api/post", postRouter);
 app.use("/api/orders", orderRouter);
 app.use("/api/message/send", messageRouter);
 app.use("/api/students", studentRouter);
- 
+app.use("/api/askAI", AIRouter);
+
 app.all("*", (req, res, next) => {
   // every request will pass through this middleware
   res.status(404).json({
@@ -207,4 +209,3 @@ app.listen(process.env.PORT, () => {
 const data = new Data({ firstName: "John", lastName: "Doe" });
 console.log("data.fullName");
 console.log(data.fullName); // Output: "John Doe"
-
