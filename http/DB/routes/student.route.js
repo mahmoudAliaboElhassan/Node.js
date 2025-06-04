@@ -14,5 +14,6 @@ router.route("/marks").get(studentController.marksDistribution);
 router.route("/topO").get(studentController.topOldestStudents);
 router.route("/ageI").get(studentController.getByAgeIndexed);
 router.route("/ageNI").get(studentController.getByAgedNoIndex);
+router.route("/getAll").get(studentController.getStudents);
 
 module.exports = router;

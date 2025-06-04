@@ -1,6 +1,18 @@
 // controllers/studentController.js
 const Student = require("../models/student.model");
 
+const redis = require("redis");
+const redisClient = redis.createClient({
+  socket: {
+    host: "127.0.0.1",
+    port: 6379,
+  },
+});
+redisClient.on("error", (err) => {
+  console.error("❌ Redis Error:", err);
+});
+redisClient.connect().then(() => console.log("✅works Redis"));
+
 const { faker } = require("@faker-js/faker");
 
 const createStudents = async (req, res) => {
@@ -177,6 +189,27 @@ const getByAgedNoIndex = async (req, res) => {
   }
 };
 
+const getStudents = async (req, res) => {
+  try {
+    const cachedData = await redisClient.get("students");
+
+    if (cachedData) {
+      console.log("📦 data comes from Redis");
+      return res.json(JSON.parse(cachedData));
+    }
+
+    console.log("📥 data comes from MongoDB");
+    const students = await Student.find({}); // ← دي الكويري
+
+    // نحط البيانات في الكاش لمدة 5 دقايق (300 ثانية)
+    await redisClient.setEx("students", 300, JSON.stringify(students));
+
+    res.json(students);
+  } catch (error) {
+    res.status(500).json({ message: "❌ حصل خطأ", error });
+  }
+};
+
 module.exports = {
   createStudents,
   averageMarksByName,
@@ -187,6 +220,7 @@ module.exports = {
   topOldestStudents,
   getByAgeIndexed,
   getByAgedNoIndex,
+  getStudents,
 };
 
 // $match — "فلترة البيانات"

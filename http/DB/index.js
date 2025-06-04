@@ -67,6 +67,7 @@ app.use(express.urlencoded({ extended: false }));
 app.get("/", (req, res) => {
   res.send("home page");
 });
+
 const Data = require("./models/data.model");
 
 const coursesRouter = require("./routes/courses.route");
