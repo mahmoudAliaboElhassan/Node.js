@@ -2,7 +2,7 @@ const express = require("express");
 const router = express.Router();
 
 const usersController = require("../controllers/users.controller");
-const { validationSchemaLogin } = require("../middlewares/validationSchema");
+const validationSchema = require("../middlewares/validationSchema.js");
 const verifyToken = require("../middlewares/verifyToken");
 const multer = require("multer");
 const appError = require("../utils/appError");
@@ -20,6 +20,7 @@ const diskStorage = multer.diskStorage({
     cb(null, file.fieldname + "-" + uniqueSuffix + "." + ext);
   },
 });
+console.log(validationSchema);
 
 const fileFilterFn = (req, file, cb) => {
   const imageType = file.mimetype.split("/")[0];
@@ -44,7 +45,9 @@ const upload = multer({
 
 router.route("/").get(verifyToken, usersController.getAllUsers);
 router.route("/register").post(upload.single("avatar"), usersController.signUp);
-router.route("/login").post(validationSchemaLogin(), usersController.login);
+router
+  .route("/login")
+  .post(validationSchema.validationSchemaLogin(), usersController.login);
 router.route("/video").post(upload.single("video"), usersController.video);
 router.route("/logout").get(usersController.logOut);
 router
@@ -52,3 +55,6 @@ router
   .put(verifyToken, usersController.change_password);
 
 module.exports = router;
+
+// 1. لو ما عملتيش Mock للـ Controller أو أجزاء من الكود:
+// الاختبار هيشغل الكود الحقيقي، يعني لما الـ controller بتاعك يستدعي الداتا من قاعدة البيانات، الاختبار هيحاول يتصل فعلاً بالـ database.

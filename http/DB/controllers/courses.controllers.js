@@ -66,7 +66,7 @@ const getSingleCourse = asyncWrapper(async (req, res, next) => {
 
 const addCourse = asyncWrapper(async (req, res, next) => {
   const { title, description, instructorId } = req.body;
-  console.log("instructor user collection", instructorId.populate);
+  // console.log("instructor user collection", instructorId.populate);
   const instructor = await User.findById(instructorId);
   // id can come from cookies
   if (!instructor || instructor.role !== "MANAGER") {

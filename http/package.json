@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "jest --watch",
     "start": "nodemon index.js",
     "run:dev": "nodemon app.js",
     "crud": "nodemon CRUD/index.js",
@@ -44,5 +44,9 @@
     "redis": "^5.5.5",
     "twilio": "^5.6.0",
     "validator": "^13.12.0"
+  },
+  "devDependencies": {
+    "jest": "^29.7.0",
+    "supertest": "^7.1.1"
   }
 }

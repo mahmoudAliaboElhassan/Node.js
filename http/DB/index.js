@@ -210,3 +210,4 @@ app.listen(process.env.PORT, () => {
 const data = new Data({ firstName: "John", lastName: "Doe" });
 console.log("data.fullName");
 console.log(data.fullName); // Output: "John Doe"
+module.exports = app;
